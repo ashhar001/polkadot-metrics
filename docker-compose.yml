@@ -1,0 +1,35 @@
+# version: '3.8'
+
+# services:
+#   polkadot-metrics:
+#     build: .
+#     ports:
+#       - "3000:3000"
+#     restart: always
+#     environment:
+#       - NODE_ENV=production
+
+version: '3.8'
+
+services:
+  polkadot-metrics:
+    build: .
+    ports:
+      - "3000:3000"
+    restart: always
+    environment:
+      - NODE_ENV=production
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"  # Maps Grafana's internal port 3000 to host's 3001
+    restart: always
