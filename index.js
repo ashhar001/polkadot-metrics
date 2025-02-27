@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const CHAIN_LABEL = 'polkadot'; // Change as needed
 
-// Create Prometheus metric objects
+
 
 // Gauge for the current era
 const currentEraGauge = new client.Gauge({
@@ -78,81 +78,7 @@ async function connectToPolkadot() {
     }
 }
 
-// async function updateMetrics() {
-//   try {
-//     if (!api || !isConnected) {
-//       console.log('Skipping metrics update - API not ready');
-//       return;
-//     }
 
-//     // Fetch the current era with timeout
-//     const currentEraOption = await Promise.race([
-//       api.query.staking.currentEra(),
-//       new Promise((_, reject) => 
-//         setTimeout(() => reject(new Error('Era query timeout')), 10000)
-//       )
-//     ]);
-    
-//     const currentEra = currentEraOption.unwrapOr(0).toNumber();
-
-//     // Query reward points with timeout
-//     const currentEraRewardPoints = await Promise.race([
-//       api.query.staking.erasRewardPoints(currentEra),
-//       new Promise((_, reject) => 
-//         setTimeout(() => reject(new Error('Reward points query timeout')), 10000)
-//       )
-//     ]);
-
-//     // Reset Prometheus gauges before updating
-//     currentEraGauge.reset();
-//     validatorRewardGauge.reset();
-
-//     // Update current era gauge
-//     currentEraGauge.labels(CHAIN_LABEL).set(currentEra);
-
-//     const { total, individual } = currentEraRewardPoints;
-
-//     // Update status data atomically
-//     const newStatusData = {
-//       timestamp: new Date().toISOString(),
-//       currentEra: currentEra,
-//       erasRewardPoints: {
-//         total: total.toString(),
-//         individual: {},
-//       },
-//       connectionStatus: 'connected'
-//     };
-
-//     // Update metrics for each validator
-//     individual.forEach((points, validatorId) => {
-//       const pointsNumber = points.toNumber();
-//       validatorRewardGauge.labels(CHAIN_LABEL, validatorId.toString()).set(pointsNumber);
-//       newStatusData.erasRewardPoints.individual[validatorId.toString()] = pointsNumber;
-//     });
-
-//     // Update status data atomically
-//     statusData = newStatusData;
-
-//     console.log(`Metrics updated successfully at ${statusData.timestamp}`);
-//   } catch (error) {
-//     console.error('Error updating metrics:', error);
-//     statusData = {
-//       ...statusData,
-//       timestamp: new Date().toISOString(),
-//       connectionStatus: 'error',
-//       lastError: error.message
-//     };
-    
-//     // Trigger reconnection if we detect API issues
-//     if (!isConnected || error.message.includes('timeout')) {
-//       console.log('Detected API issues, attempting reconnection...');
-//       isConnected = false;
-//       await connectToPolkadot();
-//     }
-//   }
-// }
-
-// new fun with session metrics
 
 async function updateMetrics() {
   try {
@@ -161,7 +87,6 @@ async function updateMetrics() {
       return;
     }
 
-    // --- STAKING METRICS ---
     const currentEraOption = await Promise.race([
       api.query.staking.currentEra(),
       new Promise((_, reject) =>
@@ -204,7 +129,7 @@ async function updateMetrics() {
       newStatusData.erasRewardPoints.individual[validatorId.toString()] = pointsNumber;
     });
 
-    // --- SESSION METRICS ---
+    // SESSION METRICS
     const currentSessionOption = await Promise.race([
       api.query.session.currentIndex(),
       new Promise((_, reject) =>
@@ -215,7 +140,7 @@ async function updateMetrics() {
     sessionIndexGauge.labels(CHAIN_LABEL).set(currentSession);
     newStatusData.sessionIndex = currentSession;
 
-    // --- SYSTEM METRICS ---
+    //  SYSTEM METRICS
     const currentBlockOption = await Promise.race([
       api.query.system.number(),
       new Promise((_, reject) =>

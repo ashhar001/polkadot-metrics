@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: polkadot-metrics
 spec:
-  replicas: 1  # Start with 3 replicas; you can scale further as needed.
+  replicas: 3  # Start with 3 replicas; you can scale further as needed.
   selector:
     matchLabels:
       app: polkadot-metrics
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: polkadot-metrics
-          image: ashhar001/polkadot-metrics:v5
+          image: ashhar001/polkadot-metrics:v6
           ports:
             - containerPort: 3000
           resources:
@@ -24,15 +24,33 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
-          # readinessProbe:
-          #   httpGet:
-          #     path: /ready
-          #     port: 3000
-          #   initialDelaySeconds: 15
-          #   periodSeconds: 10
-          # livenessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: 3000
-          #   initialDelaySeconds: 20
-          #   periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 15
+
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: polkadot-metrics
+spec:
+  selector:
+    app: polkadot-metrics
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: NodePort
