@@ -1,89 +1,102 @@
-# Polkadot Metrics Exporter 📊
+# Polkadot Metrics Exporter
 
-This project provides **on-chain metrics for the Polkadot network** using **Prometheus and Grafana** for monitoring.
+This repository provides a simple Node.js application that connects to the Polkadot network, scrapes key metrics, and exposes them in a Prometheus-compatible format. The project includes a Helm chart (`polkadot-metrics`) for easy deployment on a Minikube cluster, along with pre-configured services for Grafana and Prometheus.
 
-## 🌟 Features
-- ✅ Exposes **current era** and **reward points** metrics for validators.
-- ✅ Exposes **session and system metrics**.
-- ✅ **Production-ready Kubernetes deployment** with Prometheus and Grafana.
-- ✅ **Autoscaling (HPA) support** for handling heavy load.
+## Features
 
----
+- **Polkadot Network Metrics**:
+  - **Current Era**: The current era of the Polkadot network.
+  - **Validator Reward Points**: Exposes one metric per validator, with each validator's reward points.
+  - **Session Index**: Current session index.
+  - **System Block Number**: The latest block number.
+- **Endpoints**:
+  - `/metrics`: Prometheus scrape endpoint.
+  - `/status`: JSON status output with details of metrics and connection status.
+  - `/health` and `/ready`: Health and readiness check endpoints.
 
-## 🚀 1. Deployment Options
+## Prerequisites
 
-### **🔹 Option 1: Deploy with Kubernetes**
-```sh
-kubectl apply -f k8s/
-```
-- This will deploy:
-  - `polkadot-metrics` app
-  - `prometheus` monitoring
-  - `grafana` visualization
-  - `hpa` for autoscaling
+- [Minikube](https://minikube.sigs.k8s.io/docs/) installed on your machine.
+- [Helm](https://helm.sh/docs/intro/install/) installed.
+- [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) configured for your Minikube cluster.
+- Node.js (if you plan to run the application locally outside of Kubernetes).
 
-#### **Access Services**
-| Service | Command |
-|---------|---------|
-| Prometheus UI | `kubectl port-forward service/prometheus 9090:9090` → [http://localhost:9090](http://localhost:9090) |
-| Grafana UI | `kubectl port-forward service/grafana 3001:3000` → [http://localhost:3001](http://localhost:3001) |
-| Application Metrics | `kubectl port-forward service/polkadot-metrics-svc 3000:3000` → [http://localhost:3000/metrics](http://localhost:3000/metrics) |
+## Installation & Deployment
 
----
+Follow these steps to run the application locally on Minikube:
 
-### **🔹 Option 2: Run Locally with Docker Compose**
-```sh
-docker compose up --build
-```
-- Prometheus: [http://localhost:9090](http://localhost:9090)
-- Grafana: [http://localhost:3001](http://localhost:3001)
+1. **Clone the Repository**:
 
----
+   ```bash
+   git clone <your-repository-url>
+   cd <repository-directory>
+   ```
 
-## 🌍 2. Visualizing Metrics in Grafana
-1. Log into Grafana (`admin/admin` on first login).
-2. Add **Prometheus** as a data source:
-   - URL: `http://prometheus:9090`
-3. Create a dashboard and add panels:
-   - `polkadot_current_era`
-   - `polkadot_validator_reward_points`
-   - `polkadot_session_current_index`
-   - `polkadot_system_block_number`
+2. **Install the Helm Chart**: Deploy the application along with Grafana and Prometheus:
 
----
+   ```bash
+   helm install polkadot-metrics ./polkadot-metrics
+   ```
 
-## 👩‍💻 3. Architecture Overview
-```plaintext
-+--------------------------------+
-|  Polkadot-Metrics (Node.js)    |
-|  - Exposes /metrics endpoint   |
-|  - Exposes /status             |
-+---------------+----------------+
-                |
-                v
-+--------------------------------+
-|  Prometheus                    |
-|  - Scrapes /metrics data       |
-|  - Stores time-series data     |
-+---------------+----------------+
-                |
-                v
-+--------------------------------+
-|  Grafana                       |
-|  - Queries Prometheus          |
-|  - Displays visual dashboards  |
-+--------------------------------+
-```
+3. **Verify Pod and Service Status**:
 
----
+   - Check the pods:
+     ```bash
+     kubectl get pods
+     ```
+   - Check the services:
+     ```bash
+     kubectl get svc
+     ```
 
-## 🚀 4. Scaling for High Load
-- **Horizontal Pod Autoscaling (HPA)**
-  - Set to auto-scale based on CPU utilization.
-  - View with:
-    ```sh
-    kubectl get hpa
-    ```
+4. **Access Grafana**: Open Grafana in your browser using:
 
----
+   ```bash
+   minikube service grafana
+   ```
+
+   - Use the default Grafana credentials (usually `admin`/`admin`) if prompted.
+   - Configure dashboards to visualize metrics.
+
+5. **Access Prometheus**: Open Prometheus in your browser:
+
+   ```bash
+   minikube service prometheus
+   ```
+
+   - You can explore metrics like `polkadot_validator_reward_points` in the Prometheus UI.
+
+6. **Access the Polkadot Metrics Exporter**: Open the Node.js application's endpoint:
+
+   ```bash
+   minikube service polkadot-metrics
+   ```
+
+   - Visit `/metrics` for raw Prometheus metrics.
+   - Visit `/status` for a JSON overview of the current metrics.
+   - Visit `/health` or `/ready` for health/readiness checks.
+
+## Local Development (Optional)
+
+If you prefer to run the application locally without Kubernetes:
+
+1. **Install Dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+2. **Start the Application**:
+
+   ```bash
+   npm run start
+   ```
+
+3. **Access the Endpoints**:
+
+   - [http://localhost:3000/metrics](http://localhost:3000/metrics)
+   - [http://localhost:3000/status](http://localhost:3000/status)
+
+Make sure you have a stable internet connection as the application connects to the Polkadot network via `wss://polkadot.api.onfinality.io/public-ws`.
+
 
