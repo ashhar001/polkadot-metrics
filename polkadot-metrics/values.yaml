@@ -1,0 +1,27 @@
+replicaCount: 1
+
+image:
+  repository: ashhar001/polkadot-metrics
+  tag: v6
+  pullPolicy: IfNotPresent
+  containerPort: 3000
+
+service:
+  name: polkadot-metrics-svc
+  type: NodePort
+  port: 80
+  targetPort: 3000
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+hpa:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
