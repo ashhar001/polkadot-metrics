@@ -11,7 +11,7 @@ data:
       - job_name: 'polkadot-metrics'
         metrics_path: /metrics  # Ensure Prometheus scrapes from the correct endpoint
         static_configs:
-          - targets: ['polkadot-metrics:80']
+          - targets: ['polkadot-metrics.default.svc.cluster.local:80']
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,4 +53,5 @@ spec:
     - protocol: TCP
       port: 9090
       targetPort: 9090
+      nodePort: 31585
   type: NodePort
