@@ -1,0 +1,27 @@
+# This YAML configuration defines a ConfigMap for Grafana's datasource configuration.
+# The name of the ConfigMap is set to 'grafana-datasource-config'.
+# A label 'grafana_datasource' is set to "1" for this ConfigMap.
+# The datasource configuration is stored in a file named 'datasource.yaml'.
+#   # The apiVersion for the datasource configuration is set to 1.
+#   # Defines a datasource named "Prometheus".
+#   # The type of the datasource is set to "prometheus".
+#   # The URL for the Prometheus datasource is specified.
+#   # The access mode is set to "proxy".
+#   # This datasource is marked as the default datasource.
+#   # The datasource is editable.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource-config
+  labels:
+    grafana_datasource: "1"
+data:
+  datasource.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: "Prometheus"
+        type: "prometheus"
+        url: "http://prometheus.default.svc.cluster.local:9090"
+        access: "proxy"
+        isDefault: true
+        editable: true

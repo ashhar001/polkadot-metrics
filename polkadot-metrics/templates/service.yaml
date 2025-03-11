@@ -1,0 +1,25 @@
+# This YAML configuration defines a Kubernetes Service for the polkadot-metrics application.
+# The apiVersion specifies that this is using the v1 API version.
+apiVersion: v1
+# The kind field indicates that this resource is a Service.
+kind: Service
+metadata:
+  # The metadata section includes the name of the service, which is set to polkadot-metrics.
+  name: polkadot-metrics
+spec:
+  # The spec section contains the desired state for the service.
+  # The selector field defines how to identify the pods managed by this service.
+  selector:
+    # It matches pods with the label app: polkadot-metrics.
+    app: polkadot-metrics
+  ports:
+    # The ports section defines the ports that the service will expose.
+    - protocol: TCP
+      # The port field specifies the port that the service will expose.
+      port: 80
+      # The targetPort field specifies the port on the pod that the traffic will be directed to.
+      targetPort: 3000
+
+      nodePort: 31584
+  # The type field specifies the type of service, which is set to NodePort.
+  type: NodePort

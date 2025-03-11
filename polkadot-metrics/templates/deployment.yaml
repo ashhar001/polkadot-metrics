@@ -1,0 +1,44 @@
+# This YAML configuration defines a Kubernetes Deployment for the polkadot-metrics application.
+# The apiVersion specifies that this is using the apps/v1 API version.
+apiVersion: apps/v1
+# The kind field indicates that this resource is a Deployment.
+kind: Deployment
+metadata:
+  # The metadata section includes the name of the deployment, which is dynamically set using Helm templating.
+  name: {{ .Release.Name }}-metrics
+spec:
+  # The spec section contains the desired state for the deployment.
+  # The replicas field specifies the number of pod replicas to run, which is configurable via Helm values.
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    # The selector field defines how to identify the pods managed by this deployment.
+    matchLabels:
+      # It matches pods with the label app: polkadot-metrics.
+      app: polkadot-metrics
+  template:
+    # The template section describes the pods that will be created by this deployment.
+    metadata:
+      labels:
+        # The labels applied to the pods, which should match the selector.
+        app: polkadot-metrics
+    spec:
+      # The spec section under template defines the pod specifications.
+      containers:
+        - name: polkadot-metrics
+          # The container image is specified using Helm values for the repository and tag.
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          # The imagePullPolicy determines when the image should be pulled.
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            # The container exposes a port, which is set using Helm values.
+            - containerPort: {{ .Values.service.targetPort }}
+          resources:
+            # The resources section specifies the resource requests and limits for the container.
+            requests:
+              # CPU and memory requests are defined using Helm values.
+              cpu: "{{ .Values.resources.requests.cpu }}"
+              memory: "{{ .Values.resources.requests.memory }}"
+            limits:
+              # CPU and memory limits are also defined using Helm values.
+              cpu: "{{ .Values.resources.limits.cpu }}"
+              memory: "{{ .Values.resources.limits.memory }}"

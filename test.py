@@ -3,8 +3,9 @@ import threading
 
 
 def worker(th: str):
-    d = requests.get('http://127.0.0.1:9100/metrics')
-    if "prom_metric_here" in d.text:
+
+    d = requests.get('http://127.0.0.1:3000/metrics')
+    if "polkadot_validator_reward_points" in d.text:
         print('Thread ' + th + ': success')
     else:
         print('Thread ' + th + ': smth wrong - exit code ' + str(d.status_code))
