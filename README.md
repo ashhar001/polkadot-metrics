@@ -21,6 +21,85 @@ This repository provides a simple Node.js application that connects to the Polka
 - [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) configured for your Minikube cluster.
 - Node.js (if you plan to run the application locally outside of Kubernetes).
 
+
+
+## AWS EKS Deployment
+
+Follow these steps to deploy the application on AWS EKS:
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-username/polkadot-metrics.git
+   cd polkadot-metrics
+   ```
+
+2. **Configure AWS Credentials**:
+   Navigate to `terraform/variables.tf` and update your AWS credentials:
+   ```hcl
+   # Example (Replace with your actual credentials)
+   variable "access_key" {
+      description = "AWS region to deploy resources"
+      type        = string
+      default     = "AKIAXXXXXXXXXXXXXXXX"
+   }
+   variable "secret_key" {
+      description = "AWS region to deploy resources"
+      type        = string
+      default     = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+   }
+   ```
+
+3. **Deploy EKS Infrastructure**:
+   ```bash
+   cd terraform
+   terraform init
+   terraform fmt
+   terraform plan
+   terraform apply
+   ```
+   
+   Wait for the infrastructure deployment to complete. The process typically takes 15-20 minutes.
+
+4. **Configure kubectl for EKS**:
+   After successful deployment, configure kubectl to connect to your EKS cluster:
+   ```bash
+   aws eks update-kubeconfig --region us-east-1 --name polkadot-eks-cluster
+   ```
+
+5. **Verify Deployment**:
+   Check the status of your pods and services:
+   ```bash
+   kubectl get pods
+   kubectl get svc
+   ```
+
+6. **Deploy Application using Helm**:
+   ```bash
+   helm install polkadot-metrics ./polkadot-metrics
+   ```
+
+7. **Access the Applications**:
+   After deployment, check the `terraform output` for the following URLs:
+   - Application URL: Access your Polkadot metrics application
+      - Eg: `http:node_ip:31584`
+   - Prometheus URL: Monitor your metrics
+      - Eg: `http:node_ip:31585`
+   - Grafana URL: Visualize your metrics with pre-configured dashboards
+      - Eg: `http:node_ip:31586`
+
+   Note: It might take a few minutes for the Node to be provisioned and the URLs to become accessible.
+
+## Important Notes
+
+- Ensure you have the AWS CLI installed and configured
+- Keep your AWS credentials secure and never commit them to version control
+- Remember to destroy the infrastructure when not needed to avoid unnecessary costs:
+  ```bash
+  terraform destroy
+  ```
+
+
+
 ## Installation & Deployment
 
 Follow these steps to run the application locally on Minikube:
@@ -98,5 +177,4 @@ If you prefer to run the application locally without Kubernetes:
    - [http://localhost:3000/status](http://localhost:3000/status)
 
 Make sure you have a stable internet connection as the application connects to the Polkadot network via `wss://polkadot.api.onfinality.io/public-ws`.
-
 
