@@ -1,27 +1,46 @@
+# Specifies the number of replicas for the deployment.
 replicaCount: 1
 
 image:
+  # The Docker repository for the image.
   repository: ashhar001/polkadot-metrics
+  # The tag of the image to be used.
   tag: v6
+  # The policy for pulling the image.
   pullPolicy: IfNotPresent
+  # The port exposed by the container.
   containerPort: 3000
 
 service:
+  # The name of the Kubernetes service.
   name: polkadot-metrics-svc
+  # The type of the service, which determines how it is exposed.
   type: NodePort
+  # The port on which the service is exposed.
   port: 80
+  # The port on the container to which the service forwards traffic.
   targetPort: 3000
 
 resources:
+  # Resource requests for the container.
   requests:
+    # The amount of CPU requested.
     cpu: "250m"
+    # The amount of memory requested.
     memory: "256Mi"
+  # Resource limits for the container.
   limits:
+    # The maximum amount of CPU allowed.
     cpu: "500m"
+    # The maximum amount of memory allowed.
     memory: "512Mi"
 
 hpa:
+  # Specifies whether the Horizontal Pod Autoscaler (HPA) is enabled.
   enabled: true
+  # The minimum number of replicas for the HPA.
   minReplicas: 1
+  # The maximum number of replicas for the HPA.
   maxReplicas: 5
+  # The target CPU utilization percentage for the HPA.
   targetCPUUtilizationPercentage: 50

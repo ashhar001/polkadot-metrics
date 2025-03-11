@@ -1,3 +1,32 @@
+# # This YAML configuration defines a ConfigMap for Grafana's dashboard provider configuration.
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   # The name of the ConfigMap is set to 'grafana-dashboard-provider'.
+#   name: grafana-dashboard-provider
+# data:
+#   # The provider configuration is stored in a file named 'provider.yaml'.
+#   # The apiVersion for the provider configuration is set to 1.
+#   # Defines a provider named 'default'.
+#   # The organization ID for the provider is set to 1.
+#   # The folder field is left empty, meaning the dashboards will be stored in the root folder.
+#   # The type of the provider is set to 'file', indicating that dashboards will be read from the file system.
+#   # The disableDeletion field is set to false, allowing dashboards to be deleted.
+#   # The updateIntervalSeconds field is set to 5, meaning the provider will check for updates every 5 seconds.
+#   # The path field specifies the directory where the dashboards are stored.
+#   provider.yaml: |
+#     apiVersion: 1
+#     providers:
+#       - name: 'default'
+#         orgId: 1
+#         folder: ''
+#         type: file
+#         disableDeletion: false
+#         updateIntervalSeconds: 5
+#         options:
+#           path: /var/lib/grafana/dashboards
+
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -14,4 +43,3 @@ data:
         updateIntervalSeconds: 5
         options:
           path: /var/lib/grafana/dashboards
-

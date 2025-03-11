@@ -19,3 +19,20 @@ node_modules/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+venv
+requirements.txt
+
+
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+.terraform/
+crash.log
+override.tf
+override.tf.json
+terraform.rc
+terraform.tfstate.backup
+terraform/.terraform
