@@ -24,7 +24,7 @@ async function startServer() {
   }, 5000); // 5-second initial delay
 
   app.listen(port, '0.0.0.0', () => {
-    console.log(`Server listening on port ${port}`);
+    console.log(`Server listening on Port ${port}`);
   });
 }
 
