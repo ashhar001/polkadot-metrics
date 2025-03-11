@@ -100,7 +100,7 @@ Follow these steps to deploy the application on AWS EKS:
 
 
 
-## Installation & Deployment
+## Minikube Deployment
 
 Follow these steps to run the application locally on Minikube:
 
