@@ -7,13 +7,11 @@ variable "region" {
 variable "access_key" {
   description = "AWS region to deploy resources"
   type        = string
-  default     = "***"
 }
 
 variable "secret_key" {
   description = "AWS region to deploy resources"
   type        = string
-  default     = "***"
 }
 
 variable "cluster_name" {
